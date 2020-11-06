@@ -23,15 +23,28 @@ export function sendRequestMsg(url, msg) {
     sock.send(msg);
     let isTimeout = false;
 
+    const delSock = _ => {
+        if (
+            typeof sock.removeAllListeners == 'function' &&
+            typeof sock.close == 'function'
+        ) {
+            sock.removeAllListeners('message');
+            sock.close();
+        }
+    };
+
     const promise = new Promise((resolve, reject) => {
         sock.once("message", function (message) {
             if (isTimeout) {
+                delSock();
                 return;
             }
 
             try {
+                delSock();
                 resolve(message.toString("utf8"));
             } catch (error) {
+                delSock();
                 reject(error);
             }
         });
@@ -40,6 +53,7 @@ export function sendRequestMsg(url, msg) {
     const timeoutPromise = new Promise(function (resolve, reject) {
         setTimeout(() => {
             isTimeout = true;
+            delSock();
             resolve({
                 error: 'request timeout'
             });

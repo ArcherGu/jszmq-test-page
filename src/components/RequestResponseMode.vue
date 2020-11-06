@@ -97,6 +97,14 @@ export default {
     mounted() {},
     methods: {
         sendRequest() {
+            if (!this.urlInfo.ip || !this.urlInfo.port) {
+                this.$message({
+                    message: "Please Input IP Address And Port First！",
+                    type: "error",
+                });
+                return;
+            }
+
             let url = `${this.urlInfo.ip}:${this.urlInfo.port}`;
             this.reqMsg = this.inputMsg;
             sendRequestMsg(url, this.inputMsg)

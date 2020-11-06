@@ -80,6 +80,15 @@ export default {
     mounted() {},
     methods: {
         subscribe() {
+            if (!this.urlInfo.ip || !this.urlInfo.port || !this.topic) {
+                this.$message({
+                    message:
+                        "Please Input IP Address, Port And Subscribe Topic First！",
+                    type: "error",
+                });
+                return;
+            }
+
             if (
                 this.currentSock &&
                 typeof this.currentSock.removeAllListeners == "function" &&
@@ -92,6 +101,11 @@ export default {
 
             let url = `${this.urlInfo.ip}:${this.urlInfo.port}`;
             this.currentSock = subSomeTopic(url, this.topic, this.subCallback);
+
+            this.$message({
+                message: `Subscribe to ws://${"ws://" + url} ${this.topic}`,
+                type: "success",
+            });
         },
 
         subCallback(message) {

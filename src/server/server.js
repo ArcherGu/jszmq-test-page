@@ -5,7 +5,7 @@ var repSock = zmq.socket("rep");
 repSock.bind("ws://127.0.0.1:8083");
 
 repSock.on("message", function (message) {
-    repSock.send("Back:" + message.toString("utf8"));
+    repSock.send(dayjs().format('YYYY-MM-DD HH:mm:ss') + " Back:" + message.toString("utf8"));
 });
 
 var pubSock = zmq.socket("pub");
